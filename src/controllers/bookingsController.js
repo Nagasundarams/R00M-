@@ -3,14 +3,6 @@ const Booking = require("../models/Booking");
 const Room = require("../models/Room");
 const mongoose = require("mongoose");
 
-// helper to sanitize and validate ObjectId-like strings
-function sanitizeObjectId(input) {
-  const s = String(input || "")
-    .trim()
-    .replace(/^:+/, "");
-  return mongoose.Types.ObjectId.isValid(s) ? s : null;
-}
-
 function normalizeRange(fromStr, toStr) {
   const from = dayjs(fromStr).startOf("day").toDate();
   const to = dayjs(toStr).startOf("day").toDate();
@@ -79,9 +71,7 @@ async function create(req, res) {
 }
 
 async function getOwnById(req, res) {
-  const cleaned = sanitizeObjectId(req.params.id);
-  if (!cleaned) return res.status(400).json({ message: "Invalid User ID" });
-  const userId = new mongoose.Types.ObjectId(cleaned);
+  const userId = req.params.id;
   try {
     const bookings = await Booking.find({
       userId: userId,
@@ -104,9 +94,7 @@ async function getOwnById(req, res) {
 
 async function availability(req, res) {
   try {
-    const cleaned = sanitizeObjectId(req.params.roomId);
-    if (!cleaned) return res.status(400).json({ message: "Invalid roomId" });
-    const roomId = new mongoose.Types.ObjectId(cleaned);
+    const roomId = req.params.roomId;
 
     const { from: fromStr, to: toStr } = req.query;
     const { from, to } = normalizeRange(fromStr, toStr);
@@ -127,10 +115,7 @@ async function update(req, res) {
     session = await mongoose.startSession();
     session.startTransaction();
 
-    const cleaned = sanitizeObjectId(req.params.id);
-    if (!cleaned)
-      return res.status(400).json({ message: "Invalid booking ID" });
-    const bookingID = new mongoose.Types.ObjectId(cleaned);
+    const bookingID = req.params.id;
 
     const booking = await Booking.findOne({
       _id: bookingID,
@@ -179,10 +164,7 @@ async function update(req, res) {
 
 async function cancel(req, res) {
   try {
-    const cleaned = sanitizeObjectId(req.params.id);
-    if (!cleaned)
-      return res.status(400).json({ message: "Invalid Booking ID" });
-    const BookingID = new mongoose.Types.ObjectId(cleaned);
+    const BookingID = req.params.id;
     const b = await Booking.findOneAndUpdate(
       { _id: BookingID },
       { $set: { status: "cancelled" } },

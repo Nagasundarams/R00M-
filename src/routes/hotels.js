@@ -2,19 +2,19 @@ const expressHotels = require("express");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const hotelsController = require("../controllers/hotelsController");
 
-const rHotels = expressHotels.Router();
+const routerHotels = expressHotels.Router();
 
 // List all hotels (public)
-rHotels.get("/", hotelsController.list);
+routerHotels.get("/", hotelsController.list);
 
 // Get single hotel
-rHotels.get("/:id", hotelsController.getById);
+routerHotels.get("/:id", hotelsController.getById);
 
 // Admin create/update/delete
-rHotels.post("/", requireAuth, requireAdmin, hotelsController.create);
+routerHotels.post("/", requireAuth, requireAdmin, hotelsController.create);
 
-rHotels.put("/:id", requireAuth, requireAdmin, hotelsController.update);
+routerHotels.put("/:id", requireAuth, requireAdmin, hotelsController.update);
 
-rHotels.delete("/:id", requireAuth, requireAdmin, hotelsController.remove);
+routerHotels.delete("/:id", requireAuth, requireAdmin, hotelsController.remove);
 
-module.exports = rHotels;
+module.exports = routerHotels;

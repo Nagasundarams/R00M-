@@ -45,7 +45,7 @@ BookingSchema.statics.hasOverlap = async function ({
 }) {
   const query = {
     roomId: roomId,
-    status: "confirmed", // Only check confirmed bookings
+    status: "confirmed", 
     $or: [
       { from: { $lte: from }, to: { $gt: from } },
       { from: { $lt: to }, to: { $gte: to } },
@@ -60,13 +60,12 @@ BookingSchema.statics.hasOverlap = async function ({
 
   const queryBuilder = this.findOne(query);
 
-  // Add session if provided
   if (session) {
     queryBuilder.session(session);
   }
 
   const conflict = await queryBuilder;
-  return !!conflict; // Return boolean
+  return !!conflict; 
 };
 
 module.exports = bookingModel("Booking", BookingSchema);
