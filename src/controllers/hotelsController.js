@@ -23,7 +23,6 @@ exports.list = async (req, res) => {
               },
             },
           },
-          // Add a field to mark if hotel matches location
           matchesLocation: location
             ? {
                 $regexMatch: {
@@ -37,11 +36,10 @@ exports.list = async (req, res) => {
       },
       {
         $sort: {
-          matchesLocation: -1, // Location matches first
-          name: 1, // Then by name
+          matchesLocation: -1,
+          name: 1,
         },
       },
-      // Remove the helper field
       {
         $unset: "matchesLocation",
       },
@@ -56,9 +54,9 @@ exports.list = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
-    const h = await Hotel.findById(req.params.id).lean();
-    if (!h) return res.status(404).json({ message: "Hotel not found" });
-    res.json(h);
+    const hotel = await Hotel.findById(req.params.id).lean();
+    if (!hotel) return res.status(404).json({ message: "Hotel not found" });
+    res.json(hotel);
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: "Failed to get hotel" });
