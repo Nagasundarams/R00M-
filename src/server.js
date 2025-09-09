@@ -6,7 +6,7 @@ const connectDB = require("../src/config/db");
 const authRoutes = require("./routes/auth");
 const hotelRoutes = require("./routes/hotels");
 const roomRoutes = require("./routes/rooms");
-const bookingRoutes = require("./routes/bookings");
+const bookingRoutes = require("./routes/book");
 
 const app = express();
 app.use(cors());
@@ -16,7 +16,8 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 app.use("/auth", authRoutes);
 app.use("/hotels", hotelRoutes);
 app.use("/rooms", roomRoutes);
-app.use("/bookings", bookingRoutes);
+app.use("/book", bookingRoutes);
+app.use("/bookings", bookingRoutes); // Backward compatibility for existing API consumers
 
 (async () => {
   connectDB();
