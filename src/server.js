@@ -17,6 +17,7 @@ app.use("/auth", authRoutes);
 app.use("/hotels", hotelRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/book", bookingRoutes);
+app.use("/bookings", bookingRoutes); // Backward compatibility for existing API consumers
 
 (async () => {
   connectDB();
