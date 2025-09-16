@@ -13,6 +13,7 @@ function normalizeRange(fromStr, toStr) {
 async function create(req, res) {
   const session = await mongoose.startSession();
   try {
+    // comment for research git
     const { roomId, from: fromStr, to: toStr, guests, hotelId } = req.body;
     const { from, to } = normalizeRange(fromStr, toStr);
 
