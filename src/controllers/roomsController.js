@@ -63,8 +63,8 @@ exports.bulkUpload = async (req, res) => {
           throw new Error('Missing required fields');
         }
 
-        // Parse amenities from comma-separated string
-        const amenities = amenitiesStr.split(',').map(item => item.trim());
+  // Parse amenities from comma-separated string
+  const amenities = (amenitiesStr ?? '').split(',').map(item => item.trim());
 
         // Validate status
         const validStatus = ['Available', 'Maintenance'];
@@ -101,10 +101,8 @@ exports.bulkUpload = async (req, res) => {
     }
 
     for (const batch of batches) {
-      const promises = batch.map(room => Room.create(room));
-      const results = await Promise.allSettled(promises);
-      
-      results.forEach((result, index) => {
+      const createResults = await Promise.allSettled(batch.map(room => Room.create(room)));
+      createResults.forEach((result, index) => {
         if (result.status === 'fulfilled') {
           results.data.successCount++;
         } else {
@@ -121,14 +119,19 @@ exports.bulkUpload = async (req, res) => {
     results.data.failedEntries.push(...errors);
     results.data.failedCount += errors.length;
 
+
     // Clean up the uploaded file
-    await fs.unlink(req.file.path);
+    if (req.file && req.file.path) {
+      await fs.unlink(req.file.path);
+    }
 
     res.json(results);
 
   } catch (error) {
     // Clean up the uploaded file
-    await fs.unlink(req.file.path);
+    if (req.file && req.file.path) {
+      await fs.unlink(req.file.path);
+    }
 
     res.status(500).json({
       success: false,
