@@ -4,6 +4,7 @@ const roomsController = require("../controllers/roomsController");
 
 const routerRooms = expressRooms.Router();
 
+
 // Public: list rooms for a hotel
 routerRooms.get("/by-hotel/:hotelId", roomsController.listByHotel);
 
